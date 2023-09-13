@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es5",
     "module": "commonjs",
     "esModuleInterop": true,
     "strict": true,
     "noImplicitAny": true,
     "resolveJsonModule": true,
-    "lib": ["es6"],
+    "lib": ["es2017"],
     "allowJs": true,
     "rootDir": "src",
     "outDir": "build"
