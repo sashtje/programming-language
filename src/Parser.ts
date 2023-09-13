@@ -118,4 +118,51 @@ export default class Parser {
 
     return root;
   }
+
+  run(node: ExpressionNode): any {
+    if (node instanceof NumberNode) {
+      return parseInt(node.number.text);
+    }
+
+    if (node instanceof UnarOperationNode) {
+      switch (node.operator.type.name) {
+        case tokenTypesList.LOG.name:
+          console.log(this.run(node.operand));
+          return;
+      }
+    }
+
+    if (node instanceof BinOperationNode) {
+      switch (node.operator.type.name) {
+        case tokenTypesList.ASSIGN.name:
+          const result = this.run(node.rightNode);
+          const variableNode = <VariableNode>node.leftNode;
+          this.scope[variableNode.variable.text] = result;
+          return result;
+        case tokenTypesList.PLUS.name:
+          return this.run(node.leftNode) + this.run(node.rightNode);
+        case tokenTypesList.MINUS.name:
+          return this.run(node.leftNode) - this.run(node.rightNode);
+      }
+    }
+
+    if (node instanceof VariableNode) {
+      const value = this.scope[node.variable.text];
+      if (value) {
+        return value;
+      } else {
+        throw new Error(`Переменная с названием ${node.variable.text} не определена`);
+      }
+    }
+
+    if (node instanceof StatementsNode) {
+      node.codeStrings.forEach((codeString) => {
+        this.run(codeString);
+      });
+
+      return;
+    }
+
+    throw new Error(`Ошибка!`);
+  }
 }
